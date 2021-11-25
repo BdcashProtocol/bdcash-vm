@@ -1,0 +1,101 @@
+/**
+ * NAME: BDCASH SMART CONTRACTS INDEX
+ * DESCRIPTION: THIS CONTRACT WILL MAINTAIN THE STATE OF THE CONTRACTS AND RETURN THE POSITION OF THE CONTRACTS IN KNOWN NETWORK
+ * AUTHOR: TURINGLABS
+ * VERSION: 1.1.8
+ * IMMUTABLE: false
+ */
+
+// DEFINING COMPILER VERSION
+/* BDCash v0.0.1 */
+
+async function constructor() {
+    
+}
+
+async function public: eachBlock(block){
+    searchdata(block['data_written'])
+}
+
+async function public: ifMempool(mempool){
+    searchdata(mempool['data_written'])
+}
+
+async function private: searchdata(data){
+    if(Object.keys(data).length > 0){
+        let keys = Object.keys(data)
+        for(let k in Object.keys(data)){
+            console.log('ANALYZING DATA FOR ' + keys[k])
+            for(let j in data[keys[k]]){
+                let written = data[keys[k]][j]
+                if(written.protocol === 'pin://'){
+                    let check = await db.read({contract: written.data})
+                    if(check.contract === undefined){
+                        let obj = {
+                            contract: written.data,
+                            idanodes: [written.refID]
+                        }
+                        let result = await db.insert(obj)
+                    } else {
+                        let idanodes = check.idanodes
+                        if(idanodes.indexOf(written.refID) === -1){
+                            idanodes.push(written.refID)
+                            await db.update({contract: written.data}, { $set: { idanodes: idanodes } })
+                        }
+                    }
+                }else if(written.protocol === 'unpin://'){
+                    let check = await db.read({contract: written.data})
+                    if(check.contract !== undefined){
+                        let idanodes = check.idanodes
+                        let toupdate = []
+                        for(let y in idanodes){
+                            if(idanodes[y] !== written.refID){
+                                toupdate.push(idanodes[y])
+                            }
+                        }
+                        await db.update({contract: written.data}, { $set: { idanodes: toupdate } })
+                    }
+                }
+            }
+        }
+    }
+}
+
+function public: index(request) {
+    return new Promise(async response => {
+        if (request !== undefined && request.contract !== undefined && request.version !== undefined) {
+            let check
+            console.log(request)
+            if(request.version === 'latest'){
+                check = await db.read({contract: request.contract })
+            }else{
+                check = await db.read({contract: request.contract + ':' + request.version })
+            }
+            console.log(check)
+            if(check.contract !== undefined){
+                let idanodes = check.idanodes
+                let nodes = await axios.get('https://raw.githubusercontent.com/bdcashchain/bdcash-idanode-network/master/peers')
+                let peers = nodes.data.split("\n")
+                let parsed = []
+                for(let k in idanodes){
+                    let idanode = idanodes[k]
+                    for (let x in peers) {
+                        let peer = peers[x].split(':')
+                        if(peer[2] === idanode){
+                            parsed.push({
+                                pubkey: peer[2],
+                                url: 'https://idanodejs' + peer[0] + '.bdcashchain.org',
+                                ip: peer[1]
+                            })
+                        }
+                    }
+                }
+                response(parsed)
+            }else{
+                response({ message: "No IdaNodes available.", contract: request.contract, error: true})
+            }
+        } else {
+            response('Please requests for a contract first')
+        }
+    })
+}

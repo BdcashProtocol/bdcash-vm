@@ -1,0 +1,73 @@
+/**
+ * NAME: BDCASH NEWS FEED MANAGER
+ * DESCRIPTION: THIS feed WILL MANAGE ALL THE FEEDS RETURNING A COMPLETE LIST
+ * AUTHOR: BDCASH TASK FORCE
+ * VERSION: 1.0.1
+ * IMMUTABLE: false
+ */
+
+// DEFINING COMPILER VERSION
+/* BDCash v0.0.1 */
+
+async function constructor() {
+    
+}
+
+async function public: eachBlock(block){
+    searchdata(block['data_written'])
+}
+
+async function private: searchdata(data){
+    if(Object.keys(data).length > 0){
+        let keys = Object.keys(data)
+        for(let k in Object.keys(data)){
+            console.log('ANALYZING DATA FOR ' + keys[k])
+            for(let j in data[keys[k]]){
+                let written = data[keys[k]][j]
+                if(written.protocol === 'rsspin://' && written.data !== 'undefined'){
+                    let check = await db.read({feed: written.data})
+                    if(check.feed === undefined){
+                        let obj = {
+                            feed: written.data,
+                            manager: keys[k],
+                            uuid: written.uuid,
+                            active: true
+                        }
+                        let result = await db.insert(obj)
+                    }else{
+                        await db.update({feed: written.data}, { $set: { active: true } })
+                    }
+                }else if(written.protocol === 'rssunpin://'){
+                    let check = await db.read({feed: written.data})
+                    if(check.feed !== undefined && keys[k] === check.manager){
+                        await db.update({feed: written.data}, { $set: { active: false } })
+                    }
+                }
+            }
+        }
+    }
+}
+
+function public: index(request) {
+    return new Promise(async response => {
+        if (request !== undefined && request.type !== undefined) {
+            let type
+            if(request.type === 'true' || request.type === true){
+                type = true
+            }else{
+                type = false
+            }
+            let dbo = await db.read({active: type})
+            let feeds = []
+            for(let k in dbo){
+                let feed = dbo[k]
+                if(feed.feed !== 'undefined'){
+                    feeds.push(feed)
+                }
+            }
+            response(feeds)
+        } else {
+            response('Please requests for a feed first')
+        }
+    })
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@bdcash-protocol/vm",
+  "version": "1.0.0",
+  "description": "BDCash Virtual Machine to run Smart Contracts",
+  "private": false,
+  "main": "src/svm.js",
+  "bin": {
+    "bdcash-contracts": "./src/cli.js"
+  },
+  "scripts": {
+    "dev": "nodemon playground.js --ignore 'db/*'",
+    "start": "node playground.js",
+    "deploy": "node ./src/cli.js -m PathToYourContract -i YourPrivKey",
+    "pub": "npm publish --access public"
+  },
+  "author": "BDCash Task Force",
+  "license": "MIT",
+  "dependencies": {
+    "@bdcash-protocol/compiler": "^1.0.0",
+    "@bdcash-protocol/core": "^1.0.2",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "coinkey": "^3.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "log-to-file": "^2.0.2",
+    "lzutf8": "^0.5.8",
+    "mathjs": "^9.0.0",
+    "minimist": "^1.2.5",
+    "mongodb": "^3.6.3",
+    "vm2": "^3.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}

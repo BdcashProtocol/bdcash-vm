@@ -1,0 +1,36 @@
+/**
+ * NAME: DEMO PLANUM EXT
+ * DESCRIPTION: THIS CONTRACT WILL ADD STAKING FEATURES TO PLANUM SIDECHAIN
+ * AUTHOR: TURINGLABS
+ * VERSION: 0.0.1
+ * IMMUTABLE: false
+ * PLANUM: 
+ */
+
+// DEFINING COMPILER VERSION
+/* BDCash v0.0.1 */
+
+async function constructor() {
+    
+}
+
+async function public: eachBlock(block){
+    if(block.height % 3 == 0){
+        stake(block['data_written'])
+    }
+}
+
+async function private: stake(data){
+    if(Object.keys(data).length > 0){
+        let keys = Object.keys(data)
+        for(let k in Object.keys(data)){
+            console.log('ANALYZING DATA FOR ' + keys[k])
+            for(let j in data[keys[k]]){
+                let written = data[keys[k]][j]
+                if(written.protocol === 'chain://'){
+                    
+                }
+            }
+        }
+    }
+}

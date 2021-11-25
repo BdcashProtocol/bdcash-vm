@@ -1,0 +1,108 @@
+/**
+ * NAME: BDCASH DECENTRALIZED NAMES
+ * DESCRIPTION: THIS CONTRACT WILL MAINTAIN A LIST OF NAMES ASSOCIATED TO ONE UNIQUE ADDRESS
+ * AUTHOR: TURINGLABS
+ * VERSION: 1.0.6
+ * IMMUTABLE: false
+ */
+
+// DEFINING COMPILER VERSION
+/* BDCash v0.0.1 */
+
+async function constructor() {
+    
+}
+
+async function public: eachBlock(block){
+    searchdata(block['data_written'])
+}
+
+async function public: ifMempool(mempool){
+    searchdata(mempool['data_written'])
+}
+
+async function private: searchdata(data){
+    if(Object.keys(data).length > 0){
+        let keys = Object.keys(data)
+        for(let k in Object.keys(data)){
+            console.log('ANALYZING DATA FOR ' + keys[k])
+            for(let j in data[keys[k]]){
+                let written = data[keys[k]][j]
+                if(written.protocol === 'names://'){
+                    let data = written.data.split(':')
+                    let action = data[0]
+                    let name = data[1]
+
+                    if(action === 'register'){
+                        let check = await db.read({name: name})
+                        if(check.name === undefined){
+                            let obj = {
+                                name: name,
+                                owner: written.address,
+                                uuid: written.uuid
+                            }
+                            let result = await db.insert(obj)
+                        } else {
+                            console.log('IGNORING, NAME ALREADY TAKEN')
+                        }
+                    }else if(action === 'transfer' && data[2] !== undefined){
+                        let check = await db.read({name: name})
+                        let transferTo = data[2]
+                        if(check.owner !== undefined){
+                            if(check.owner === written.address){
+                                await db.update({name: name}, { $set: { owner: transferTo } })
+                            }else{
+                                console.log('CAN\'T TRANSFER, NOT THE OWNER')
+                            }
+                        }else{
+                            console.log('NAME NEVER REGISTERED')
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+function public: names(){
+    return new Promise(async response => {
+        let names = await db.read()
+        response(names)
+    })
+}
+
+function public: check(request) {
+    return new Promise(async response => {
+        if (request !== undefined && request.name !== undefined) {
+            let check = await db.read({name: request.name })
+            if(check.name !== undefined){
+                response({ message: "Name already taken.", available: false, record: check })
+            }else{
+                response({ message: "Name available.", available: true})
+            }
+        } else {
+            response('Please requests for a name first')
+        }
+    })
+}
+function public: search(request) {
+    return new Promise(async response => {
+        if (request !== undefined && request.name !== undefined) {
+            let check = await db.read({name: request.name })
+            if(check.name !== undefined){
+                response({ address: check.owner, error: false })
+            }else{
+                response({ message: "Name not found.", error: true})
+            }
+        } else if (request !== undefined && request.address !== undefined) {
+            let check = await db.read({ owner: request.address })
+            if(check.name !== undefined || check.length > 0){
+                response({ names: check, error: false })
+            }else{
+                response({ message: "Address not found.", error: true})
+            }
+        } else {
+            response('Please requests for a name first')
+        }
+    })
+}
