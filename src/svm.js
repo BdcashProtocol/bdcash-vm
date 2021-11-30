@@ -15,7 +15,7 @@ if (global['db_options'] === undefined) {
     global['db_options'] = { useNewUrlParser: true, useUnifiedTopology: true }
 }
 if (global['db_name'] === undefined) {
-    global['db_name'] = 'idanodejs'
+    global['db_name'] = 'nodesh'
 }
 
 async function test(code, request = '') {
