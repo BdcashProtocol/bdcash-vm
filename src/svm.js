@@ -6,7 +6,7 @@ const compiler = require('@bdcash-protocol/compiler')
 const v001 = compiler.v001
 const v002 = compiler.v002
 const crypto = require('crypto')
-var CoinKey = require('coinkey')
+var CoinKey = require('@bdcash-protocol/coinkey')
 
 if (global['db_url'] === undefined) {
     global['db_url'] = 'mongodb://localhost:27017'
@@ -233,7 +233,7 @@ function read(address, local = false, version = 'latest') {
             let bdcash = new BDCashCore
             bdcash.staticnodes = true
             if (local) {
-                bdcash.mainnetIdaNodes = ['http://localhost:3001']
+                bdcash.mainnetNodesh = ['http://localhost:3001']
             }
             if (address.indexOf('/') === -1) {
                 // console.log('Reading deployed contract.')
@@ -330,7 +330,7 @@ function run(address, request, local = false, version = 'latest') {
             let bdcash = new BDCashCore
             bdcash.staticnodes = true
             if (local) {
-                bdcash.mainnetIdaNodes = ['http://localhost:3001']
+                bdcash.mainnetNodesh = ['http://localhost:3001']
             }
             if (request.signature !== undefined && request.message !== undefined && request.pubkey !== undefined) {
                 let validateRequest = await bdcash.verifyMessage(request.pubkey, request.signature, request.message)

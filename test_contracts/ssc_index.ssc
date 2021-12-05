@@ -33,27 +33,27 @@ async function private: searchdata(data){
                     if(check.contract === undefined){
                         let obj = {
                             contract: written.data,
-                            idanodes: [written.refID]
+                            nodeshs: [written.refID]
                         }
                         let result = await db.insert(obj)
                     } else {
-                        let idanodes = check.idanodes
-                        if(idanodes.indexOf(written.refID) === -1){
-                            idanodes.push(written.refID)
-                            await db.update({contract: written.data}, { $set: { idanodes: idanodes } })
+                        let nodeshs = check.nodeshs
+                        if(nodeshs.indexOf(written.refID) === -1){
+                            nodeshs.push(written.refID)
+                            await db.update({contract: written.data}, { $set: { nodeshs: nodeshs } })
                         }
                     }
                 }else if(written.protocol === 'unpin://'){
                     let check = await db.read({contract: written.data})
                     if(check.contract !== undefined){
-                        let idanodes = check.idanodes
+                        let nodeshs = check.nodeshs
                         let toupdate = []
-                        for(let y in idanodes){
-                            if(idanodes[y] !== written.refID){
-                                toupdate.push(idanodes[y])
+                        for(let y in nodeshs){
+                            if(nodeshs[y] !== written.refID){
+                                toupdate.push(nodeshs[y])
                             }
                         }
-                        await db.update({contract: written.data}, { $set: { idanodes: toupdate } })
+                        await db.update({contract: written.data}, { $set: { nodeshs: toupdate } })
                     }
                 }
             }
@@ -73,18 +73,18 @@ function public: index(request) {
             }
             console.log(check)
             if(check.contract !== undefined){
-                let idanodes = check.idanodes
-                let nodes = await axios.get('https://raw.githubusercontent.com/bdcashchain/bdcash-idanode-network/master/peers')
+                let nodeshs = check.nodeshs
+                let nodes = await axios.get('https://raw.githubusercontent.com/BdcashProtocol/bdcash-nodesh-network/master/peers')
                 let peers = nodes.data.split("\n")
                 let parsed = []
-                for(let k in idanodes){
-                    let idanode = idanodes[k]
+                for(let k in nodeshs){
+                    let nodesh = nodeshs[k]
                     for (let x in peers) {
                         let peer = peers[x].split(':')
-                        if(peer[2] === idanode){
+                        if(peer[2] === nodesh){
                             parsed.push({
                                 pubkey: peer[2],
-                                url: 'https://idanodejs' + peer[0] + '.bdcashchain.org',
+                                url: 'https://nodesh' + peer[0] + '.bdcashprotocol.com',
                                 ip: peer[1]
                             })
                         }
@@ -92,7 +92,7 @@ function public: index(request) {
                 }
                 response(parsed)
             }else{
-                response({ message: "No IdaNodes available.", contract: request.contract, error: true})
+                response({ message: "No nodeshs available.", contract: request.contract, error: true})
             }
         } else {
             response('Please requests for a contract first')

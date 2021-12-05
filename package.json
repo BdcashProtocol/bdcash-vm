@@ -1,6 +1,6 @@
 {
   "name": "@bdcash-protocol/vm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "BDCash Virtual Machine to run Smart Contracts",
   "private": false,
   "main": "src/svm.js",
@@ -16,11 +16,11 @@
   "author": "BDCash Task Force",
   "license": "MIT",
   "dependencies": {
-    "@bdcash-protocol/compiler": "^1.0.0",
+    "@bdcash-protocol/compiler": "^1.0.1",
     "@bdcash-protocol/core": "^1.0.4",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "coinkey": "^3.0.0",
+    "@bdcash-protocol/coinkey": "^1.0.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "log-to-file": "^2.0.2",
