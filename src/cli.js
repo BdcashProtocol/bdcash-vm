@@ -209,9 +209,9 @@ async function publish() {
 
                     const hash = crypto.createHash('sha256').update(identity + ':' + manifest.name).digest('hex')
                     let contract = new CoinKey(Buffer.from(hash, 'hex'), {
-                        private: 0xae,
-                        public: 0x30,
-                        scripthash: 0x0d
+                        private: 0x97,
+                        public: 0x12,
+                        scripthash: 0x53
                     })
 
                     console.log('CONTRACT ADDRESS IS: ' + contract.publicAddress)
@@ -219,7 +219,7 @@ async function publish() {
                     let sid = await bdcash.buildWallet('TEMPORARY', contract.publicAddress, { prv: contract.privateWif, key: contract.publicKey.toString('hex') }, false)
 
                     if (balance.balance > 0.011) {
-                        console.log('BALANCE IS: ' + balance.balance + ' LYRA')
+                        console.log('BALANCE IS: ' + balance.balance + ' BDCASH')
                         let genesis_check = await bdcash.post('/read', { address: manifest.address, refID: 'genesis', protocol: 'ida://' })
                         if (genesis_check.data[0] !== undefined) {
                             let genesis = genesis_check.data[0].data
