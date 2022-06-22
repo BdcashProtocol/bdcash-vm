@@ -1,6 +1,6 @@
 const vm = require('./src/svm')
 const fs = require('fs')
-const BDCashCore = require('@bdcash-protocol/core')
+const BDCashCore = require('@bdeco/core')
 let bdcash = new BDCashCore
 bdcash.staticnodes = true
 const log = require('log-to-file');
@@ -29,7 +29,7 @@ app.post('/run', async (req, res) => {
     res.send(result)
 })
 
-app.listen(port, () => console.log(`BDCash playground listening on port ${port}!`))
+app.listen(port, () => console.log(`BDCashProtocol playground listening on port ${port}!`))
 
 process.on('message', (m) => {
     console.log('CHILD got message:', m);

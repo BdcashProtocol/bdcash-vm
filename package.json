@@ -1,7 +1,7 @@
 {
-  "name": "@bdcash-protocol/vm",
-  "version": "1.0.5",
-  "description": "BDCash Virtual Machine to run Smart Contracts",
+  "name": "@bdeco/vm",
+  "version": "1.0.0",
+  "description": "BDCashProtocol Virtual Machine to run Smart Contracts",
   "private": false,
   "main": "src/svm.js",
   "bin": {
@@ -13,14 +13,14 @@
     "deploy": "node ./src/cli.js -m PathToYourContract -i YourPrivKey",
     "pub": "npm publish --access public"
   },
-  "author": "BDCash Task Force",
+  "author": "BDCashProtocol Task Force",
   "license": "MIT",
   "dependencies": {
-    "@bdcash-protocol/compiler": "^1.0.1",
-    "@bdcash-protocol/core": "^1.1.0",
+    "@bdeco/compiler": "^1.0.0",
+    "@bdeco/core": "^1.0.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "@bdcash-protocol/coinkey": "^1.0.4",
+    "@bdeco/coinkey": "^1.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "log-to-file": "^2.0.2",

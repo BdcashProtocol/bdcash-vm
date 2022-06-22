@@ -1,12 +1,12 @@
 const { NodeVM } = require('vm2')
 const compressor = require('lzutf8')
 const fs = require('fs')
-const BDCashCore = require('@bdcash-protocol/core')
-const compiler = require('@bdcash-protocol/compiler')
+const BDCashCore = require('@bdeco/core')
+const compiler = require('@bdeco/compiler')
 const v001 = compiler.v001
 const v002 = compiler.v002
 const crypto = require('crypto')
-var CoinKey = require('@bdcash-protocol/coinkey')
+var CoinKey = require('@bdeco/coinkey')
 
 if (global['db_url'] === undefined) {
     global['db_url'] = 'mongodb://localhost:27017'
@@ -43,9 +43,9 @@ function prepare(toCompile, request = '', local = false, address) {
             }
 
             let compiled = false
-            if (toCompile.toString().indexOf('/* BDCash v0.0.1 */') !== -1) {
+            if (toCompile.toString().indexOf('/* BDCashProtocol v0.0.1 */') !== -1) {
                 compiled = await v001.compiler(toCompile.toString().trim(), request, local)
-            } else if (toCompile.toString().indexOf('/* BDCash v0.0.2 */' !== -1)) {
+            } else if (toCompile.toString().indexOf('/* BDCashProtocol v0.0.2 */' !== -1)) {
                 compiled = await v002.compiler(toCompile.toString().trim(), request, local, address)
             }
 
@@ -174,7 +174,7 @@ function prepare(toCompile, request = '', local = false, address) {
                     console: 'inherit',
                     require: {
                         external: {
-                            modules: ['@bdcash-protocol/core', 'axios', 'mathjs']
+                            modules: ['@bdeco/core', 'axios', 'mathjs']
                         },
                         mock: {
                             db: dbMock
@@ -301,10 +301,10 @@ function read(address, local = false, version = 'latest') {
                 console.log('Reading local contract.')
                 let toCompile = fs.readFileSync(address)
                 let compiled = false
-                if (toCompile.toString().indexOf('/* BDCash v0.0.1 */') !== -1) {
+                if (toCompile.toString().indexOf('/* BDCashProtocol v0.0.1 */') !== -1) {
                     console.log('Compiling with v0.0.1')
                     compiled = await v001.compiler(toCompile.toString().trim(), '', local)
-                } else if (toCompile.toString().indexOf('/* BDCash v0.0.2 */' !== -1)) {
+                } else if (toCompile.toString().indexOf('/* BDCashProtocol v0.0.2 */' !== -1)) {
                     console.log('Compiling with v0.0.2')
                     compiled = await v002.compiler(toCompile.toString().trim(), '', local, address)
                 }

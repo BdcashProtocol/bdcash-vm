@@ -4,8 +4,8 @@ const vm = require('./svm')
 const fs = require('fs')
 const compressor = require('lzutf8')
 const argv = require('minimist')(process.argv.slice(2))
-const BDCashCore = require('@bdcash-protocol/core')
-var CoinKey = require('@bdcash-protocol/coinkey')
+const BDCashCore = require('@bdeco/core')
+var CoinKey = require('@bdeco/coinkey')
 var crypto = require('crypto')
 var childProcess = require('child_process');
 const axios = require('axios')
@@ -143,7 +143,7 @@ function runScript(scriptPath, callback) {
     process.on('exit', function (code) {
         if (invoked) return;
         invoked = true;
-        callback('BDCash Playground server stopping');
+        callback('BDCashProtocol Playground server stopping');
     });
 
 }
