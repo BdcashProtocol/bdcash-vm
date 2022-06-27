@@ -1,6 +1,6 @@
 {
   "name": "@bdeco/vm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "BDCashProtocol Virtual Machine to run Smart Contracts",
   "private": false,
   "main": "src/svm.js",
@@ -16,7 +16,7 @@
   "author": "BDCashProtocol Task Force",
   "license": "MIT",
   "dependencies": {
-    "@bdeco/compiler": "^1.0.0",
+    "@bdeco/compiler": "^1.0.1",
     "@bdeco/core": "^1.0.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
